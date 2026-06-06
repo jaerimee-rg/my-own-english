@@ -60,11 +60,11 @@
 - [~] AI 호출 비용/길이 제한 — `max_tokens` 제한 적용, 레이트리밋은 추후
 
 ## Phase 4 — 다듬기
-- [ ] 모바일 UX 정리(터치·반응형 점검)
-- [ ] PWA(홈 화면 추가, 아이콘)
-- [ ] 디자인·애니메이션 다듬기
+- [x] 모바일 UX 정리 — 전 페이지 모바일 우선(max-w-md, 하단 네비), Playwright 모바일 뷰포트 검증
+- [~] PWA(홈 화면 추가, 아이콘) — `manifest.webmanifest` + 아이콘 + 메타 연결. 서비스워커 오프라인은 추후
+- [~] 디자인·애니메이션 — 기본 스타일/active 트랜지션 적용, 추가 다듬기 여지
 - [ ] 비용/성능 최적화
-- [ ] 배포 점검 및 최종 QA
+- [ ] 배포 점검 및 최종 QA — **GitHub/Vercel/Supabase 접근 후**
 
 ---
 
@@ -72,3 +72,4 @@
 - 2026-06-06: 요구사항 v1.0 확정, 태스크 리스트 초기 작성.
 - 2026-06-06: 빌드 워크플로우(`myown-build-phase`) 작성. Phase 0 직접 구현 — Next 16/React 19 스캐폴드, Tailwind v4, Vitest+RTL, Playwright, 모바일 하단 네비 + 5개 페이지. 단위 4/4·빌드·E2E 2/2 통과. Supabase 호스팅 생성/Vercel 링크는 사용자 조치 대기.
 - 2026-06-06: Phase 1 백엔드 비의존 구현 — TTS(발음), 문장 검색/필터, 유효성검사, 데이터 액세스(repo), PhraseForm/PhraseCard/문장집 페이지. 단위 30/30·빌드·E2E 4/4 통과. 인증·실 DB 영속화는 Supabase 접근 후.
+- 2026-06-06: Phase 2 학습 모드 — 플래시카드, 객관식/빈칸 퀴즈, 게임(스트릭·뱃지). Phase 3 AI — `/api/chat` 대화(시나리오/자유), `/api/suggest` 문장 제안(키 없으면 미리보기). Phase 4 — PWA 매니페스트. 누적 단위 59→테스트 통과·E2E 7/7. 인증·실DB·실키·배포는 사용자 접근(GitHub 재인증 + Supabase write) 대기.

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#ec4899"/>
+  <text x="50%" y="50%" dy="0.35em" text-anchor="middle" font-size="300" font-family="system-ui, sans-serif">🤸</text>
+  <text x="50%" y="86%" dy="0.35em" text-anchor="middle" font-size="64" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="700">MOE</text>
+</svg>

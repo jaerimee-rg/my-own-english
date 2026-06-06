@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "My Own English",
   description: "리듬체조 수업 영어 문장·단어 저장과 AI 대화 연습",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "My Own English" },
+  icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 
 export const viewport: Viewport = {
