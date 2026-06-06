@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import {
   listPhrases,
   createPhrase,
+  createPhrases,
   updatePhrase,
   deletePhrase,
   toggleFavorite,
@@ -14,6 +15,7 @@ import type { Phrase, PhraseInput } from "@/lib/phrases/types";
 import { APPARATUS, SITUATIONS, LEVELS } from "@/lib/phrases/constants";
 import PhraseCard from "@/components/phrases/PhraseCard";
 import PhraseForm from "@/components/phrases/PhraseForm";
+import BulkImport from "@/components/phrases/BulkImport";
 
 type Status = "loading" | "ready" | "error";
 
@@ -24,6 +26,7 @@ export default function PhrasesClient() {
   const [filter, setFilter] = useState<PhraseFilter>({});
   const [editing, setEditing] = useState<Phrase | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
@@ -59,6 +62,11 @@ export default function PhrasesClient() {
     () => filterPhrases(phrases, filter),
     [phrases, filter],
   );
+
+  async function handleBulkSave(items: PhraseInput[]) {
+    await createPhrases(supabase, items);
+    await load();
+  }
 
   async function handleSubmit(input: PhraseInput) {
     setSaving(true);
@@ -110,16 +118,29 @@ export default function PhrasesClient() {
             수업에 쓰는 영어 문장과 단어를 모아요
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setEditing(null);
-            setShowForm(true);
-          }}
-          className="rounded-xl bg-pink-600 px-4 py-2 font-semibold text-white active:scale-95"
-        >
-          + 추가
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setShowBulk(true);
+              setShowForm(false);
+            }}
+            className="rounded-xl border border-pink-300 px-3 py-2 text-sm font-semibold text-pink-700 active:scale-95 dark:border-pink-800 dark:text-pink-300"
+          >
+            일괄
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditing(null);
+              setShowForm(true);
+              setShowBulk(false);
+            }}
+            className="rounded-xl bg-pink-600 px-4 py-2 font-semibold text-white active:scale-95"
+          >
+            + 추가
+          </button>
+        </div>
       </header>
 
       <div className="mb-4 flex flex-col gap-2">
@@ -178,6 +199,15 @@ export default function PhrasesClient() {
           </select>
         </div>
       </div>
+
+      {showBulk && (
+        <div className="mb-4 rounded-2xl border border-pink-200 bg-pink-50/50 p-4 dark:border-pink-900 dark:bg-pink-950/20">
+          <BulkImport
+            onSave={handleBulkSave}
+            onClose={() => setShowBulk(false)}
+          />
+        </div>
+      )}
 
       {showForm && (
         <div className="mb-4 rounded-2xl border border-pink-200 bg-pink-50/50 p-4 dark:border-pink-900 dark:bg-pink-950/20">

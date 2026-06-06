@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   listPhrases,
   createPhrase,
+  createPhrases,
   updatePhrase,
   deletePhrase,
   toggleFavorite,
@@ -13,7 +14,9 @@ function mockClient(result: { data?: unknown; error?: { message: string } | null
   const builder: Record<string, ReturnType<typeof vi.fn>> = {};
   const chain = () => builder;
   builder.from = vi.fn(chain);
-  builder.select = vi.fn(chain);
+  // select() may be terminal (createPhrases) or chained into .single()/.order();
+  // return a value that is both awaitable and chainable.
+  builder.select = vi.fn(() => Object.assign(Promise.resolve(result), builder));
   builder.insert = vi.fn(chain);
   builder.update = vi.fn(chain);
   builder.delete = vi.fn(chain);
@@ -44,6 +47,26 @@ describe("phrases repo", () => {
     expect(inserted.english).toBe("Hi");
     expect(inserted.is_favorite).toBe(false);
     expect(out).toEqual({ id: "9" });
+  });
+
+  it("createPhrases normalizes and bulk-inserts rows", async () => {
+    const { client, builder } = mockClient({ data: [{ id: "1" }, { id: "2" }], error: null });
+    const out = await createPhrases(client, [
+      { english: " A ", korean: "가" },
+      { english: "B", korean: "나" },
+    ]);
+    const inserted = builder.insert.mock.calls[0][0];
+    expect(Array.isArray(inserted)).toBe(true);
+    expect(inserted).toHaveLength(2);
+    expect(inserted[0].english).toBe("A");
+    expect(out).toHaveLength(2);
+  });
+
+  it("createPhrases returns [] for empty input without calling insert", async () => {
+    const { client, builder } = mockClient({ data: [], error: null });
+    const out = await createPhrases(client, []);
+    expect(out).toEqual([]);
+    expect(builder.insert).not.toHaveBeenCalled();
   });
 
   it("updatePhrase targets the id", async () => {

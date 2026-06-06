@@ -70,6 +70,19 @@
 
 ---
 
+## 기능: 문장 일괄 추가 (Bulk Import)
+> 한국어·영어가 섞인 전체 텍스트를 붙여넣으면 문장 쌍으로 분리해 문장집에 일괄 저장.
+
+- [x] 결정적 파서 `parseBulkPhrases(text)` — 구분자·번갈이 줄·스크립트 경계·한글판별, 순수 함수
+- [x] 파서 단위 테스트 (7케이스 통과)
+- [x] `createPhrases(supabase, inputs[])` 일괄 insert (repo) + 테스트
+- [x] `/api/parse-phrases` 라우트 — `aiBulk.bulkParse` OpenAI 보강, 키 없으면 결정적 파서 폴백
+- [x] 라우트/AI 파서 로직 테스트 (`aiBulk.test`)
+- [x] BulkImport UI — 텍스트 입력 → 분석 → 미리보기(행 수정·삭제) → 전체 저장
+- [x] 문장집 페이지에 "일괄" 버튼 연결
+- [x] UI 단위 테스트 + E2E
+- [x] 검증: lint 클린 · 단위 79 · 빌드 · E2E 10/10 통과
+
 ## 진행 로그
 - 2026-06-06: 요구사항 v1.0 확정, 태스크 리스트 초기 작성.
 - 2026-06-06: 빌드 워크플로우(`myown-build-phase`) 작성. Phase 0 직접 구현 — Next 16/React 19 스캐폴드, Tailwind v4, Vitest+RTL, Playwright, 모바일 하단 네비 + 5개 페이지. 단위 4/4·빌드·E2E 2/2 통과. Supabase 호스팅 생성/Vercel 링크는 사용자 조치 대기.
@@ -78,3 +91,4 @@
 - 2026-06-06: GitHub 배포 완료(`jwchoi684/my-own-english`, jaerimee-rg 접근 막혀 대체 저장소). ESLint로 effect setState 버그 2건 수정. GitHub Actions CI 구축 → 클라우드에서 lint·테스트·빌드·E2E 전부 green 확인, Vercel 자동배포 잡 동작(VERCEL_TOKEN 시크릿 추가 시 활성). 남은 것: Vercel 토큰(시크릿 등록 후 자동배포) + Supabase 접근(프로젝트 생성/마이그레이션).
 - 2026-06-06: AI를 OpenAI gpt-4.1-nano로 전환(실호출 E2E 검증). Phase 1 이메일 로그인 추가(미들웨어+로그인+로그아웃). 단위 62·E2E 9 통과.
 - 2026-06-06: **전체 배포 완료.** Supabase 스키마 Management API로 적용(7테이블, RLS). jaerimee-rg/my-own-english push → Vercel Git 자동배포(framework=nextjs 수정, env 3종 설정, 배포보호 해제). **라이브: https://my-own-english.vercel.app — HTTP 200, OpenAI 라이브 동작(`/api/chat` configured:true), Supabase 연결 확인.**
+- 2026-06-06: **문장 일괄 추가(Bulk Import) 기능 완성.** 결정적 파서(`parseBulkPhrases`) + OpenAI 보강(`/api/parse-phrases`, 폴백) + `createPhrases` 일괄 insert + BulkImport UI(분석→미리보기→저장). 단위 79·lint·빌드·E2E 10/10 통과.

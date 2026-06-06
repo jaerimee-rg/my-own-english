@@ -30,6 +30,17 @@ export async function createPhrase(
   return data as Phrase;
 }
 
+export async function createPhrases(
+  supabase: SupabaseClient,
+  inputs: PhraseInput[],
+): Promise<Phrase[]> {
+  if (inputs.length === 0) return [];
+  const rows = inputs.map(normalizePhraseInput);
+  const { data, error } = await supabase.from(TABLE).insert(rows).select();
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Phrase[];
+}
+
 export async function updatePhrase(
   supabase: SupabaseClient,
   id: string,
