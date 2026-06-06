@@ -5,15 +5,21 @@ import { createClient } from "@/lib/supabase/client";
 import { listPhrases } from "@/lib/phrases/repo";
 import type { Phrase } from "@/lib/phrases/types";
 import FlashcardDeck from "@/components/study/FlashcardDeck";
+import QuizMode from "@/components/study/QuizMode";
 
-type Mode = "menu" | "flashcard";
+type Mode = "menu" | "flashcard" | "quiz";
 
 const MODES = [
   { key: "flashcard", icon: "🃏", label: "플래시카드", ready: true },
-  { key: "quiz", icon: "❓", label: "퀴즈", ready: false },
+  { key: "quiz", icon: "❓", label: "퀴즈", ready: true },
   { key: "image", icon: "🖼️", label: "이미지 연결", ready: false },
   { key: "game", icon: "🎮", label: "게임", ready: false },
 ] as const;
+
+const TITLE: Record<Exclude<Mode, "menu">, string> = {
+  flashcard: "플래시카드",
+  quiz: "퀴즈",
+};
 
 export default function StudyClient() {
   const supabase = useMemo(() => createClient(), []);
@@ -33,10 +39,10 @@ export default function StudyClient() {
   }, [supabase]);
 
   useEffect(() => {
-    if (mode === "flashcard") void load();
+    if (mode !== "menu") void load();
   }, [mode, load]);
 
-  if (mode === "flashcard") {
+  if (mode !== "menu") {
     return (
       <div>
         <button
@@ -46,13 +52,15 @@ export default function StudyClient() {
         >
           ← 모드 선택
         </button>
-        <h1 className="mb-6 text-xl font-bold">플래시카드</h1>
+        <h1 className="mb-6 text-xl font-bold">{TITLE[mode]}</h1>
         {loading ? (
           <p className="py-12 text-center text-sm text-neutral-400">
             불러오는 중…
           </p>
-        ) : (
+        ) : mode === "flashcard" ? (
           <FlashcardDeck phrases={phrases} />
+        ) : (
+          <QuizMode phrases={phrases} />
         )}
       </div>
     );
@@ -72,16 +80,14 @@ export default function StudyClient() {
             <button
               type="button"
               disabled={!m.ready}
-              onClick={() => m.ready && setMode("flashcard")}
+              onClick={() => m.ready && setMode(m.key as Mode)}
               className="flex w-full flex-col items-start gap-2 rounded-2xl border border-black/5 bg-white p-5 text-left shadow-sm transition active:scale-[0.98] disabled:opacity-50 dark:border-white/10 dark:bg-neutral-900"
             >
               <span aria-hidden className="text-3xl">
                 {m.icon}
               </span>
               <span className="font-semibold">{m.label}</span>
-              {!m.ready && (
-                <span className="text-xs text-neutral-400">곧</span>
-              )}
+              {!m.ready && <span className="text-xs text-neutral-400">곧</span>}
             </button>
           </li>
         ))}
