@@ -75,3 +75,4 @@
 - 2026-06-06: 빌드 워크플로우(`myown-build-phase`) 작성. Phase 0 직접 구현 — Next 16/React 19 스캐폴드, Tailwind v4, Vitest+RTL, Playwright, 모바일 하단 네비 + 5개 페이지. 단위 4/4·빌드·E2E 2/2 통과. Supabase 호스팅 생성/Vercel 링크는 사용자 조치 대기.
 - 2026-06-06: Phase 1 백엔드 비의존 구현 — TTS(발음), 문장 검색/필터, 유효성검사, 데이터 액세스(repo), PhraseForm/PhraseCard/문장집 페이지. 단위 30/30·빌드·E2E 4/4 통과. 인증·실 DB 영속화는 Supabase 접근 후.
 - 2026-06-06: Phase 2 학습 모드 — 플래시카드, 객관식/빈칸 퀴즈, 게임(스트릭·뱃지). Phase 3 AI — `/api/chat` 대화(시나리오/자유), `/api/suggest` 문장 제안(키 없으면 미리보기). Phase 4 — PWA 매니페스트. 누적 단위 59→테스트 통과·E2E 7/7. 인증·실DB·실키·배포는 사용자 접근(GitHub 재인증 + Supabase write) 대기.
+- 2026-06-06: GitHub 배포 완료(`jwchoi684/my-own-english`, jaerimee-rg 접근 막혀 대체 저장소). ESLint로 effect setState 버그 2건 수정. GitHub Actions CI 구축 → 클라우드에서 lint·테스트·빌드·E2E 전부 green 확인, Vercel 자동배포 잡 동작(VERCEL_TOKEN 시크릿 추가 시 활성). 남은 것: Vercel 토큰(시크릿 등록 후 자동배포) + Supabase 접근(프로젝트 생성/마이그레이션).
