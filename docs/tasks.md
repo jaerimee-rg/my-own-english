@@ -36,11 +36,11 @@
 - [ ] Supabase Auth 단일 계정 로그인(이메일/매직링크)
 - [~] DB 스키마 작성: phrases, tags, phrase_tags, images, study_progress, conversations — `supabase/migrations/0001_init.sql` 작성 완료, **적용 대기(Supabase 접근 후)**
 - [~] RLS 정책(본인 데이터만 접근) — 마이그레이션에 포함, 적용 대기
-- [~] 도메인 상수·타입 정의(소도구/상황/난이도) — `src/lib/phrases/` 작성 완료
-- [ ] 문장 CRUD (영어/한국어/메모)
-- [ ] 분류 입력: 소도구·상황·난이도·자유 태그
-- [ ] 목록 검색·필터·정렬, 즐겨찾기
-- [ ] TTS 발음 듣기(Web Speech API) 공통 컴포넌트
+- [x] 도메인 상수·타입 정의(소도구/상황/난이도) — `src/lib/phrases/`
+- [~] 문장 CRUD (영어/한국어/메모) — repo(`repo.ts`)+UI(폼·카드·페이지) 작성, 단위/E2E 통과. **실 DB 영속화 검증은 Supabase 연결 후**
+- [x] 분류 입력: 소도구·상황·난이도 (자유 태그는 Phase 1 후반)
+- [x] 목록 검색·필터·정렬, 즐겨찾기 — `filter.ts` + UI, 테스트 통과
+- [x] TTS 발음 듣기(Web Speech API) 공통 컴포넌트 — `tts.ts` + `SpeakButton`
 
 ## Phase 2 — 학습 모드(Study)
 - [ ] 학습 범위 선택(분류 기준)
@@ -71,3 +71,4 @@
 ## 진행 로그
 - 2026-06-06: 요구사항 v1.0 확정, 태스크 리스트 초기 작성.
 - 2026-06-06: 빌드 워크플로우(`myown-build-phase`) 작성. Phase 0 직접 구현 — Next 16/React 19 스캐폴드, Tailwind v4, Vitest+RTL, Playwright, 모바일 하단 네비 + 5개 페이지. 단위 4/4·빌드·E2E 2/2 통과. Supabase 호스팅 생성/Vercel 링크는 사용자 조치 대기.
+- 2026-06-06: Phase 1 백엔드 비의존 구현 — TTS(발음), 문장 검색/필터, 유효성검사, 데이터 액세스(repo), PhraseForm/PhraseCard/문장집 페이지. 단위 30/30·빌드·E2E 4/4 통과. 인증·실 DB 영속화는 Supabase 접근 후.
