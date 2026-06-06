@@ -52,12 +52,12 @@
 - [~] study_progress 저장(점수·스트릭) — 세션 로컬 점수 동작, 영속화는 Supabase 후
 
 ## Phase 3 — AI 기능
-- [ ] Claude API 연동(서버 라우트, 키 관리)
+- [~] Claude API 연동(서버 라우트, 키 관리) — `/api/chat` + `chat.ts`(DI, 테스트). 실호출은 `ANTHROPIC_API_KEY` 설정 후
 - [ ] 문장 AI 제안(한국어 → 영어 + 뉘앙스/예시)
-- [ ] AI 대화 연습 — 상황 선택형 시나리오
-- [ ] AI 대화 연습 — 자유 대화 + 표현 교정/피드백
-- [ ] 대화 기록 저장(conversations, conversation_messages)
-- [ ] AI 호출 비용/길이 제한
+- [x] AI 대화 연습 — 상황 선택형 시나리오 — `scenarios.ts` + 시나리오 선택 UI
+- [x] AI 대화 연습 — 자유 대화 + 표현 교정/피드백 — `ConversationClient` 채팅 UI(시스템 프롬프트에 교정 포함)
+- [ ] 대화 기록 저장(conversations, conversation_messages) — Supabase 필요(대기)
+- [~] AI 호출 비용/길이 제한 — `max_tokens` 제한 적용, 레이트리밋은 추후
 
 ## Phase 4 — 다듬기
 - [ ] 모바일 UX 정리(터치·반응형 점검)
