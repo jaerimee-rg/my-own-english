@@ -37,8 +37,41 @@ export default function PhraseForm({
   const [errors, setErrors] =
     useState<ReturnType<typeof validatePhraseInput>["errors"]>({});
 
+  const [suggestions, setSuggestions] = useState<
+    { english: string; note?: string }[]
+  >([]);
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestNote, setSuggestNote] = useState<string | null>(null);
+
   function set<K extends keyof PhraseInput>(key: K, value: PhraseInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  async function suggest() {
+    if (!form.korean.trim() || suggesting) return;
+    setSuggesting(true);
+    setSuggestNote(null);
+    try {
+      const res = await fetch("/api/suggest", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ korean: form.korean }),
+      });
+      const data = (await res.json()) as {
+        suggestions?: { english: string; note?: string }[];
+        configured?: boolean;
+      };
+      setSuggestions(data.suggestions ?? []);
+      if (!data.configured) {
+        setSuggestNote("AI 제안은 ANTHROPIC_API_KEY 설정 후 사용할 수 있어요.");
+      } else if ((data.suggestions ?? []).length === 0) {
+        setSuggestNote("제안을 받지 못했어요. 다시 시도해 주세요.");
+      }
+    } catch {
+      setSuggestNote("제안 요청에 실패했어요.");
+    } finally {
+      setSuggesting(false);
+    }
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -90,6 +123,43 @@ export default function PhraseForm({
           <p role="alert" className="mt-1 text-sm text-red-500">
             {errors.korean}
           </p>
+        )}
+      </div>
+
+      <div>
+        <button
+          type="button"
+          onClick={suggest}
+          disabled={suggesting || !form.korean.trim()}
+          className="text-sm font-medium text-pink-600 disabled:opacity-40 dark:text-pink-400"
+        >
+          {suggesting ? "AI가 생각 중…" : "✨ 한국어로 AI 영어 제안"}
+        </button>
+        {suggestNote && (
+          <p className="mt-1 text-xs text-neutral-400">{suggestNote}</p>
+        )}
+        {suggestions.length > 0 && (
+          <ul className="mt-2 flex flex-col gap-1">
+            {suggestions.map((s, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    set("english", s.english);
+                    setSuggestions([]);
+                  }}
+                  className="w-full rounded-lg border border-pink-200 bg-pink-50/50 px-3 py-2 text-left text-sm dark:border-pink-900 dark:bg-pink-950/20"
+                >
+                  <span className="font-medium">{s.english}</span>
+                  {s.note && (
+                    <span className="block text-xs text-neutral-400">
+                      {s.note}
+                    </span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 

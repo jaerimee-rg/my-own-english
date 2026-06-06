@@ -53,7 +53,7 @@
 
 ## Phase 3 — AI 기능
 - [~] Claude API 연동(서버 라우트, 키 관리) — `/api/chat` + `chat.ts`(DI, 테스트). 실호출은 `ANTHROPIC_API_KEY` 설정 후
-- [ ] 문장 AI 제안(한국어 → 영어 + 뉘앙스/예시)
+- [x] 문장 AI 제안(한국어 → 영어 + 뉘앙스/예시) — `/api/suggest` + `suggest.ts`, PhraseForm "✨ AI 제안" 버튼, 테스트 통과
 - [x] AI 대화 연습 — 상황 선택형 시나리오 — `scenarios.ts` + 시나리오 선택 UI
 - [x] AI 대화 연습 — 자유 대화 + 표현 교정/피드백 — `ConversationClient` 채팅 UI(시스템 프롬프트에 교정 포함)
 - [ ] 대화 기록 저장(conversations, conversation_messages) — Supabase 필요(대기)
