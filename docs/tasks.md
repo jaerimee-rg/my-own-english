@@ -34,7 +34,7 @@
 - [x] 기본 레이아웃/네비게이션(홈·문장집·학습·대화·설정)
 
 ## Phase 1 — 인증 + 문장집(Phrasebook)
-- [ ] Supabase Auth 단일 계정 로그인(이메일/매직링크)
+- [x] Supabase Auth 이메일 로그인 — `/login`(LoginForm 가입/로그인) + 세션 미들웨어 + 설정 로그아웃, 단위/E2E 통과
 - [~] DB 스키마 작성: phrases, tags, phrase_tags, images, study_progress, conversations — `supabase/migrations/0001_init.sql` 작성 완료, **적용 대기(Supabase 접근 후)**
 - [~] RLS 정책(본인 데이터만 접근) — 마이그레이션에 포함, 적용 대기
 - [x] 도메인 상수·타입 정의(소도구/상황/난이도) — `src/lib/phrases/`
