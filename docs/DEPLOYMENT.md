@@ -1,5 +1,12 @@
 # 배포 가이드 (Deployment)
 
+> ✅ **라이브: https://my-own-english.vercel.app**
+> - GitHub: `jaerimee-rg/my-own-english` (main 푸시 → Vercel 자동배포)
+> - Vercel: framework=nextjs, env(`NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY`/`OPENAI_API_KEY`) 설정됨
+> - Supabase: `iqqanqpoaopukgbwrukl` 프로젝트, `0001_init.sql` 적용 완료(7테이블+RLS)
+> - AI: OpenAI gpt-4.1-nano 라이브 동작
+
+
 현재 코드는 GitHub(`jwchoi684/my-own-english`)에 있고, 매 푸시마다 GitHub Actions가
 **lint · 단위테스트 · 빌드 · E2E**를 실행합니다. 아래만 채우면 Vercel·Supabase가 연결됩니다.
 

@@ -29,14 +29,14 @@
 - [x] Playwright 설정 (UI 테스트, `npm run e2e`, 모바일 뷰포트)
 - [~] Supabase 프로젝트 생성 + 연결 — 클라이언트(`@supabase/ssr`) 배선 완료. **호스팅 프로젝트 생성은 MCP read-only 모드로 차단됨 → 사용자 조치 필요**
 - [x] 환경변수 관리 (`.env.local`, `.env.example`)
-- [x] GitHub 배포 — `jwchoi684/my-own-english`(비공개)에 푸시 완료 (jaerimee-rg 접근 막혀 대체 저장소 사용)
-- [~] Vercel 배포 — **Vercel CLI 인증 필요**(`vercel login` 또는 토큰) 후 `vercel deploy`, 또는 Git 연동 설정
+- [x] GitHub 배포 — **`jaerimee-rg/my-own-english`** (canonical, Vercel 연동) + `jwchoi684/my-own-english`(백업)
+- [x] Vercel 배포 — **라이브: https://my-own-english.vercel.app** (Git 자동배포, framework=nextjs, env 3종 설정, OpenAI 라이브 동작)
 - [x] 기본 레이아웃/네비게이션(홈·문장집·학습·대화·설정)
 
 ## Phase 1 — 인증 + 문장집(Phrasebook)
 - [x] Supabase Auth 이메일 로그인 — `/login`(LoginForm 가입/로그인) + 세션 미들웨어 + 설정 로그아웃, 단위/E2E 통과
-- [~] DB 스키마 작성: phrases, tags, phrase_tags, images, study_progress, conversations — `supabase/migrations/0001_init.sql` 작성 완료, **적용 대기(Supabase 접근 후)**
-- [~] RLS 정책(본인 데이터만 접근) — 마이그레이션에 포함, 적용 대기
+- [x] DB 스키마 작성: phrases, tags, phrase_tags, images, study_progress, conversations — **Supabase에 적용 완료(7개 테이블 생성 확인)**
+- [x] RLS 정책(본인 데이터만 접근) — 적용 완료, REST anon 조회 `[]` 확인
 - [x] 도메인 상수·타입 정의(소도구/상황/난이도) — `src/lib/phrases/`
 - [~] 문장 CRUD (영어/한국어/메모) — repo(`repo.ts`)+UI(폼·카드·페이지) 작성, 단위/E2E 통과. **실 DB 영속화 검증은 Supabase 연결 후**
 - [x] 분류 입력: 소도구·상황·난이도 (자유 태그는 Phase 1 후반)
@@ -66,7 +66,7 @@
 - [~] 디자인·애니메이션 — 기본 스타일/active 트랜지션 적용, 추가 다듬기 여지
 - [x] CI/CD 파이프라인 — `.github/workflows/ci.yml`(push마다 lint·테스트·빌드·E2E + Vercel 자동배포 잡), `docs/DEPLOYMENT.md`
 - [ ] 비용/성능 최적화
-- [~] 배포 점검 및 최종 QA — GitHub ✅, Vercel/Supabase는 자격증명(시크릿/토큰) 입력 후 자동
+- [x] 배포 점검 및 최종 QA — GitHub ✅ · Vercel ✅(라이브 200) · Supabase ✅(스키마 적용) · OpenAI 라이브 ✅
 
 ---
 
@@ -76,3 +76,5 @@
 - 2026-06-06: Phase 1 백엔드 비의존 구현 — TTS(발음), 문장 검색/필터, 유효성검사, 데이터 액세스(repo), PhraseForm/PhraseCard/문장집 페이지. 단위 30/30·빌드·E2E 4/4 통과. 인증·실 DB 영속화는 Supabase 접근 후.
 - 2026-06-06: Phase 2 학습 모드 — 플래시카드, 객관식/빈칸 퀴즈, 게임(스트릭·뱃지). Phase 3 AI — `/api/chat` 대화(시나리오/자유), `/api/suggest` 문장 제안(키 없으면 미리보기). Phase 4 — PWA 매니페스트. 누적 단위 59→테스트 통과·E2E 7/7. 인증·실DB·실키·배포는 사용자 접근(GitHub 재인증 + Supabase write) 대기.
 - 2026-06-06: GitHub 배포 완료(`jwchoi684/my-own-english`, jaerimee-rg 접근 막혀 대체 저장소). ESLint로 effect setState 버그 2건 수정. GitHub Actions CI 구축 → 클라우드에서 lint·테스트·빌드·E2E 전부 green 확인, Vercel 자동배포 잡 동작(VERCEL_TOKEN 시크릿 추가 시 활성). 남은 것: Vercel 토큰(시크릿 등록 후 자동배포) + Supabase 접근(프로젝트 생성/마이그레이션).
+- 2026-06-06: AI를 OpenAI gpt-4.1-nano로 전환(실호출 E2E 검증). Phase 1 이메일 로그인 추가(미들웨어+로그인+로그아웃). 단위 62·E2E 9 통과.
+- 2026-06-06: **전체 배포 완료.** Supabase 스키마 Management API로 적용(7테이블, RLS). jaerimee-rg/my-own-english push → Vercel Git 자동배포(framework=nextjs 수정, env 3종 설정, 배포보호 해제). **라이브: https://my-own-english.vercel.app — HTTP 200, OpenAI 라이브 동작(`/api/chat` configured:true), Supabase 연결 확인.**
