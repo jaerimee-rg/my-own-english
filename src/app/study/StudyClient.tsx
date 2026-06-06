@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { listPhrases } from "@/lib/phrases/repo";
 import type { Phrase } from "@/lib/phrases/types";
@@ -44,20 +44,23 @@ export default function StudyClient() {
   const [phrases, setPhrases] = useState<Phrase[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      setPhrases(await listPhrases(supabase));
-    } catch {
-      setPhrases([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [supabase]);
-
-  useEffect(() => {
-    if (NEEDS_PHRASES.includes(mode)) void load();
-  }, [mode, load]);
+  // Enter a mode from a click handler (not an effect): load phrases when the
+  // chosen mode needs them. setState in event handlers is the recommended path.
+  const enter = useCallback(
+    async (m: Mode) => {
+      setMode(m);
+      if (!NEEDS_PHRASES.includes(m)) return;
+      setLoading(true);
+      try {
+        setPhrases(await listPhrases(supabase));
+      } catch {
+        setPhrases([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [supabase],
+  );
 
   // Quiz type chooser
   if (mode === "quizMenu") {
@@ -74,14 +77,14 @@ export default function StudyClient() {
         <div className="flex flex-col gap-3">
           <button
             type="button"
-            onClick={() => setMode("quizChoice")}
+            onClick={() => enter("quizChoice")}
             className="rounded-2xl border border-black/5 bg-white p-5 text-left font-semibold shadow-sm dark:border-white/10 dark:bg-neutral-900"
           >
             ❓ 객관식 — 뜻 보고 영어 고르기
           </button>
           <button
             type="button"
-            onClick={() => setMode("quizBlank")}
+            onClick={() => enter("quizBlank")}
             className="rounded-2xl border border-black/5 bg-white p-5 text-left font-semibold shadow-sm dark:border-white/10 dark:bg-neutral-900"
           >
             ✏️ 빈칸 채우기 — 단어 직접 입력
@@ -139,7 +142,12 @@ export default function StudyClient() {
             <button
               type="button"
               disabled={!m.ready}
-              onClick={() => m.ready && setMode(m.key as Mode)}
+              onClick={() =>
+                m.ready &&
+                (m.key === "quizMenu"
+                  ? setMode("quizMenu")
+                  : enter(m.key as Mode))
+              }
               className="flex w-full flex-col items-start gap-2 rounded-2xl border border-black/5 bg-white p-5 text-left shadow-sm transition active:scale-[0.98] disabled:opacity-50 dark:border-white/10 dark:bg-neutral-900"
             >
               <span aria-hidden className="text-3xl">

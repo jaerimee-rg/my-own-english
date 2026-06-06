@@ -27,7 +27,8 @@ export default function PhrasesClient() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    setStatus("loading");
+    // No synchronous setState here: the await defers updates out of the
+    // effect tick (initial status is already "loading").
     try {
       setPhrases(await listPhrases(supabase));
       setStatus("ready");
@@ -37,8 +38,22 @@ export default function PhrasesClient() {
   }, [supabase]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    let active = true;
+    (async () => {
+      try {
+        const data = await listPhrases(supabase);
+        if (active) {
+          setPhrases(data);
+          setStatus("ready");
+        }
+      } catch {
+        if (active) setStatus("error");
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
 
   const visible = useMemo(
     () => filterPhrases(phrases, filter),
