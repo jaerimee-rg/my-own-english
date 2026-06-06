@@ -10,15 +10,14 @@ export type GenerateDeps = {
 
 export type GenerateResult = { reply: string; configured: boolean };
 
-const DEFAULT_MODEL = "claude-sonnet-4-6";
-const PLACEHOLDER = "placeholder-anthropic-key";
+const DEFAULT_MODEL = "gpt-4.1-nano";
 
 function hasRealKey(apiKey?: string): boolean {
-  return !!apiKey && apiKey !== PLACEHOLDER && apiKey.startsWith("sk-ant");
+  return !!apiKey && apiKey.startsWith("sk-");
 }
 
 /**
- * Generate an assistant reply for a conversation scenario.
+ * Generate an assistant reply for a conversation scenario via the OpenAI API.
  * Dependency-injected so it can be unit-tested without network access.
  * When no real API key is configured, returns a friendly notice instead.
  */
@@ -33,39 +32,32 @@ export async function generateReply(
     return {
       configured: false,
       reply:
-        "AI 대화는 ANTHROPIC_API_KEY를 설정하면 켜져요. 지금은 미리보기 모드예요. (설정 후 실제 영어 대화가 가능합니다.)",
+        "AI 대화는 OPENAI_API_KEY를 설정하면 켜져요. 지금은 미리보기 모드예요. (설정 후 실제 영어 대화가 가능합니다.)",
     };
   }
 
   const doFetch = deps.fetchImpl ?? fetch;
-  const res = await doFetch("https://api.anthropic.com/v1/messages", {
+  const res = await doFetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-api-key": deps.apiKey!,
-      "anthropic-version": "2023-06-01",
+      authorization: `Bearer ${deps.apiKey!}`,
     },
     body: JSON.stringify({
       model: deps.model ?? DEFAULT_MODEL,
       max_tokens: 300,
-      system: scenario.systemPrompt,
-      messages,
+      messages: [{ role: "system", content: scenario.systemPrompt }, ...messages],
     }),
   });
 
   if (!res.ok) {
-    throw new Error(`Anthropic API error: ${res.status}`);
+    throw new Error(`OpenAI API error: ${res.status}`);
   }
 
   const data = (await res.json()) as {
-    content?: { type: string; text?: string }[];
+    choices?: { message?: { content?: string } }[];
   };
-  const reply =
-    data.content
-      ?.filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("")
-      .trim() ?? "";
+  const reply = data.choices?.[0]?.message?.content?.trim() ?? "";
 
   return { configured: true, reply };
 }

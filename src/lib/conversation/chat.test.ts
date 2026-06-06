@@ -15,36 +15,43 @@ describe("generateReply", () => {
 
   it("returns a preview notice when no real key is set", async () => {
     const out = await generateReply(messages, "greeting", {
-      apiKey: "placeholder-anthropic-key",
+      apiKey: "",
     });
     expect(out.configured).toBe(false);
-    expect(out.reply).toMatch(/ANTHROPIC_API_KEY/);
+    expect(out.reply).toMatch(/OPENAI_API_KEY/);
   });
 
-  it("calls Anthropic and extracts text when a key is set", async () => {
+  it("calls OpenAI and extracts text when a key is set", async () => {
     const fetchImpl = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ content: [{ type: "text", text: "Hi teacher!" }] }),
+      json: async () => ({
+        choices: [{ message: { content: "Hi teacher!" } }],
+      }),
     });
     const out = await generateReply(messages, "greeting", {
-      apiKey: "sk-ant-test",
+      apiKey: "sk-test",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
     expect(out.configured).toBe(true);
     expect(out.reply).toBe("Hi teacher!");
 
     const [url, init] = fetchImpl.mock.calls[0];
-    expect(url).toContain("api.anthropic.com");
+    expect(url).toContain("api.openai.com");
     const sentBody = JSON.parse((init as RequestInit).body as string);
-    expect(sentBody.system).toBe(getScenario("greeting")!.systemPrompt);
-    expect(sentBody.messages).toEqual(messages);
+    // System prompt is prepended as the first message.
+    expect(sentBody.messages[0]).toEqual({
+      role: "system",
+      content: getScenario("greeting")!.systemPrompt,
+    });
+    expect(sentBody.messages.slice(1)).toEqual(messages);
+    expect(sentBody.model).toBe("gpt-4.1-nano");
   });
 
   it("throws on API error", async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: false, status: 500 });
     await expect(
       generateReply(messages, "free", {
-        apiKey: "sk-ant-test",
+        apiKey: "sk-test",
         fetchImpl: fetchImpl as unknown as typeof fetch,
       }),
     ).rejects.toThrow(/500/);

@@ -27,7 +27,7 @@ Phase 단위 빌드는 `.claude/workflows/myown-build-phase.mjs` 워크플로우
 ## 기술 스택
 - Next.js (App Router) + TypeScript + Tailwind CSS (모바일 우선)
 - Supabase (Postgres + Auth + Storage, RLS) — `@supabase/ssr`
-- Claude API (AI 문장 제안·대화)
+- OpenAI API (gpt-4.1-nano) — AI 문장 제안·대화 (`OPENAI_API_KEY`)
 - 테스트: Vitest + React Testing Library / Playwright(UI)
 - Vercel 배포
 

@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
   try {
     const result = await generateReply(messages, scenarioId, {
-      apiKey: process.env.ANTHROPIC_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY,
     });
     return Response.json(result);
   } catch {

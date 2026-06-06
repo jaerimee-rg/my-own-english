@@ -24,7 +24,7 @@ GitHub 저장소 → Settings → Secrets and variables → Actions 에 추가:
 ## 3. 환경 변수 (Vercel + 로컬 `.env.local`)
 ```
 NEXT_PUBLIC_SUPABASE_URL=...          # Supabase Project URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...     # Supabase anon public key
-ANTHROPIC_API_KEY=sk-ant-...          # AI 대화·문장 제안 (server only)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...     # Supabase anon public key (service_role 금지)
+OPENAI_API_KEY=sk-proj-...            # AI 대화·문장 제안 gpt-4.1-nano (server only)
 ```
 값이 없으면 앱은 "미리보기 모드"로 동작합니다(데이터 저장·AI 비활성).

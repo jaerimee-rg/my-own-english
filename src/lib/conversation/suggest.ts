@@ -3,11 +3,10 @@ import type { GenerateDeps } from "./chat";
 export type Suggestion = { english: string; note?: string };
 export type SuggestResult = { suggestions: Suggestion[]; configured: boolean };
 
-const DEFAULT_MODEL = "claude-sonnet-4-6";
-const PLACEHOLDER = "placeholder-anthropic-key";
+const DEFAULT_MODEL = "gpt-4.1-nano";
 
 function hasRealKey(apiKey?: string): boolean {
-  return !!apiKey && apiKey !== PLACEHOLDER && apiKey.startsWith("sk-ant");
+  return !!apiKey && apiKey.startsWith("sk-");
 }
 
 const SYSTEM =
@@ -15,7 +14,7 @@ const SYSTEM =
   "Given a Korean sentence, return 3 natural English ways to say it to young students. " +
   'Respond ONLY with JSON: {"suggestions":[{"english":"...","note":"<short Korean nuance>"}]}.';
 
-/** Suggest English phrasings for a Korean sentence (DI for testability). */
+/** Suggest English phrasings for a Korean sentence via OpenAI (DI for testability). */
 export async function generateSuggestions(
   korean: string,
   deps: GenerateDeps = {},
@@ -27,31 +26,29 @@ export async function generateSuggestions(
   }
 
   const doFetch = deps.fetchImpl ?? fetch;
-  const res = await doFetch("https://api.anthropic.com/v1/messages", {
+  const res = await doFetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-api-key": deps.apiKey!,
-      "anthropic-version": "2023-06-01",
+      authorization: `Bearer ${deps.apiKey!}`,
     },
     body: JSON.stringify({
       model: deps.model ?? DEFAULT_MODEL,
       max_tokens: 400,
-      system: SYSTEM,
-      messages: [{ role: "user", content: korean }],
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: SYSTEM },
+        { role: "user", content: korean },
+      ],
     }),
   });
 
-  if (!res.ok) throw new Error(`Anthropic API error: ${res.status}`);
+  if (!res.ok) throw new Error(`OpenAI API error: ${res.status}`);
 
   const data = (await res.json()) as {
-    content?: { type: string; text?: string }[];
+    choices?: { message?: { content?: string } }[];
   };
-  const text =
-    data.content
-      ?.filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("") ?? "";
+  const text = data.choices?.[0]?.message?.content ?? "";
 
   return { suggestions: parseSuggestions(text), configured: true };
 }

@@ -10,9 +10,11 @@ test("conversation: pick scenario and get a reply", async ({ page }) => {
   await page.getByLabel("메시지").fill("Hello!");
   await page.getByRole("button", { name: "전송" }).click();
 
-  // User message echoes; assistant responds (preview notice without API key).
+  // User message echoes immediately...
   await expect(page.getByText("Hello!")).toBeVisible();
-  await expect(page.getByText(/ANTHROPIC_API_KEY|미리보기/)).toBeVisible({
-    timeout: 15000,
+  // ...and an assistant reply renders (real reply with a key, preview notice
+  // without one) — assistant bubbles carry a 발음 듣기 button.
+  await expect(page.getByRole("button", { name: "발음 듣기" })).toBeVisible({
+    timeout: 20000,
   });
 });
