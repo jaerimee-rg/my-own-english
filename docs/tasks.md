@@ -64,8 +64,9 @@
 - [x] 모바일 UX 정리 — 전 페이지 모바일 우선(max-w-md, 하단 네비), Playwright 모바일 뷰포트 검증
 - [~] PWA(홈 화면 추가, 아이콘) — `manifest.webmanifest` + 아이콘 + 메타 연결. 서비스워커 오프라인은 추후
 - [~] 디자인·애니메이션 — 기본 스타일/active 트랜지션 적용, 추가 다듬기 여지
+- [x] CI/CD 파이프라인 — `.github/workflows/ci.yml`(push마다 lint·테스트·빌드·E2E + Vercel 자동배포 잡), `docs/DEPLOYMENT.md`
 - [ ] 비용/성능 최적화
-- [ ] 배포 점검 및 최종 QA — **GitHub/Vercel/Supabase 접근 후**
+- [~] 배포 점검 및 최종 QA — GitHub ✅, Vercel/Supabase는 자격증명(시크릿/토큰) 입력 후 자동
 
 ---
 
