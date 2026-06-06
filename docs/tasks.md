@@ -29,7 +29,8 @@
 - [x] Playwright 설정 (UI 테스트, `npm run e2e`, 모바일 뷰포트)
 - [~] Supabase 프로젝트 생성 + 연결 — 클라이언트(`@supabase/ssr`) 배선 완료. **호스팅 프로젝트 생성은 MCP read-only 모드로 차단됨 → 사용자 조치 필요**
 - [x] 환경변수 관리 (`.env.local`, `.env.example`)
-- [~] Vercel 프로젝트 링크 — GitHub 푸시까지 완료, **Vercel↔GitHub 연결은 사용자 확인 필요**
+- [x] GitHub 배포 — `jwchoi684/my-own-english`(비공개)에 푸시 완료 (jaerimee-rg 접근 막혀 대체 저장소 사용)
+- [~] Vercel 배포 — **Vercel CLI 인증 필요**(`vercel login` 또는 토큰) 후 `vercel deploy`, 또는 Git 연동 설정
 - [x] 기본 레이아웃/네비게이션(홈·문장집·학습·대화·설정)
 
 ## Phase 1 — 인증 + 문장집(Phrasebook)
