@@ -34,8 +34,9 @@
 
 ## Phase 1 — 인증 + 문장집(Phrasebook)
 - [ ] Supabase Auth 단일 계정 로그인(이메일/매직링크)
-- [ ] DB 스키마 작성: phrases, tags, phrase_tags, images
-- [ ] RLS 정책(본인 데이터만 접근)
+- [~] DB 스키마 작성: phrases, tags, phrase_tags, images, study_progress, conversations — `supabase/migrations/0001_init.sql` 작성 완료, **적용 대기(Supabase 접근 후)**
+- [~] RLS 정책(본인 데이터만 접근) — 마이그레이션에 포함, 적용 대기
+- [~] 도메인 상수·타입 정의(소도구/상황/난이도) — `src/lib/phrases/` 작성 완료
 - [ ] 문장 CRUD (영어/한국어/메모)
 - [ ] 분류 입력: 소도구·상황·난이도·자유 태그
 - [ ] 목록 검색·필터·정렬, 즐겨찾기
