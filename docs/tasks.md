@@ -47,9 +47,9 @@
 - [x] 플래시카드 모드 — `FlashcardDeck` + 학습 페이지 모드 메뉴, 단위/E2E 통과
 - [x] 퀴즈 모드 — 객관식(뜻→영어), `QuizMode` + `quiz.ts`, 점수·결과, 테스트 통과
 - [x] 퀴즈 모드 — 빈칸 채우기: `BlankQuizMode` + 퀴즈 유형 선택, 테스트 통과
-- [ ] 이미지/그림 연결 모드 (이미지 업로드 포함)
-- [ ] 게임형 — 점수·뱃지·보상
-- [ ] study_progress 저장(점수·스트릭)
+- [ ] 이미지/그림 연결 모드 (이미지 업로드 포함) — Supabase Storage 필요(대기)
+- [x] 게임형 — 점수·뱃지·보상: `GameMode` + `game.ts`(스트릭/뱃지/점수), 테스트 통과
+- [~] study_progress 저장(점수·스트릭) — 세션 로컬 점수 동작, 영속화는 Supabase 후
 
 ## Phase 3 — AI 기능
 - [ ] Claude API 연동(서버 라우트, 키 관리)

@@ -7,23 +7,36 @@ import type { Phrase } from "@/lib/phrases/types";
 import FlashcardDeck from "@/components/study/FlashcardDeck";
 import QuizMode from "@/components/study/QuizMode";
 import BlankQuizMode from "@/components/study/BlankQuizMode";
+import GameMode from "@/components/study/GameMode";
 
-type Mode = "menu" | "flashcard" | "quizMenu" | "quizChoice" | "quizBlank";
+type Mode =
+  | "menu"
+  | "flashcard"
+  | "quizMenu"
+  | "quizChoice"
+  | "quizBlank"
+  | "game";
 
 const MODES = [
   { key: "flashcard", icon: "🃏", label: "플래시카드", ready: true },
   { key: "quizMenu", icon: "❓", label: "퀴즈", ready: true },
+  { key: "game", icon: "🎮", label: "게임", ready: true },
   { key: "image", icon: "🖼️", label: "이미지 연결", ready: false },
-  { key: "game", icon: "🎮", label: "게임", ready: false },
 ] as const;
 
 const TITLE: Record<Exclude<Mode, "menu" | "quizMenu">, string> = {
   flashcard: "플래시카드",
   quizChoice: "객관식 퀴즈",
   quizBlank: "빈칸 채우기",
+  game: "게임",
 };
 
-const NEEDS_PHRASES: Mode[] = ["flashcard", "quizChoice", "quizBlank"];
+const NEEDS_PHRASES: Mode[] = [
+  "flashcard",
+  "quizChoice",
+  "quizBlank",
+  "game",
+];
 
 export default function StudyClient() {
   const supabase = useMemo(() => createClient(), []);
@@ -83,7 +96,11 @@ export default function StudyClient() {
       <div>
         <button
           type="button"
-          onClick={() => setMode(mode === "flashcard" ? "menu" : "quizMenu")}
+          onClick={() =>
+            setMode(
+              mode === "quizChoice" || mode === "quizBlank" ? "quizMenu" : "menu",
+            )
+          }
           className="mb-4 text-sm text-neutral-500"
         >
           ← 뒤로
@@ -99,8 +116,10 @@ export default function StudyClient() {
           <FlashcardDeck phrases={phrases} />
         ) : mode === "quizChoice" ? (
           <QuizMode phrases={phrases} />
-        ) : (
+        ) : mode === "quizBlank" ? (
           <BlankQuizMode phrases={phrases} />
+        ) : (
+          <GameMode phrases={phrases} />
         )}
       </div>
     );
